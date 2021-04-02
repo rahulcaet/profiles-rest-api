@@ -56,3 +56,11 @@ class UserProfileSerializer(serializers.ModelSerializer):
             instance.set_password(password)
             instance.save()
         return instance
+
+class ProfileFeedItemSerializer(serializers.ModelSerializer):
+    """"Serializes profile feed items"""
+    class Meta:
+        model = models.ProfileFeedItem
+        #fields = '__all__'
+        fields = ('íd', 'user_profile', 'status_text', 'created_at')
+        extra_kwargs = { 'user_profile' : { 'read_only' : True }}
