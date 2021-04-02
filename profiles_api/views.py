@@ -6,6 +6,8 @@ from rest_framework import viewsets
 from . import models
 from . import permissions
 from rest_framework.authentication import TokenAuthentication
+from rest_framework import filters
+
 # Create your views here.
 
 class HelloApiView(APIView):
@@ -98,3 +100,5 @@ class ProfileModelViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.UserProfileSerializer
     authentication_classes = (TokenAuthentication,)
     permission_classes = (permissions.IsAuthenticatedOrProfileOwner,)
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name', 'email')
