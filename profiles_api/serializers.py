@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from . import models
 
 class HelloSerializer(serializers.Serializer):
     ''''serializes a name field for testing our APIView'''
@@ -23,4 +24,35 @@ class HelloSerializer(serializers.Serializer):
         return data
 
 
+class UserProfileSerializer(serializers.ModelSerializer):
+    '''serializes a user profile model object'''
+    password = serializers.CharField(write_only=True,
+                                     style={ 'input_type' : 'password',
+                                             'placeholder' : 'Password'})
+    class Meta:
+        model = models.UserProfile
+        fields = ('id', 'name', 'email', 'password')
+        # extra_kwargs = {
+        #     'password' :  {
+        #         'write_only' : True,
+        #         #'style' : { 'input_type' : 'password'}
+        #     }
+        # }
 
+    def create(self, validated_data):
+        '''create a new user'''
+        user = models.UserProfile.objects.create_user(
+                    name=validated_data.get('name'),
+                    email=validated_data.get('email'),
+                    password=validated_data.get('password')
+                   )
+        return user
+
+    def update(self, instance, validated_data):
+        password = validated_data.pop('password', None)
+        instance.email = validated_data.get('email', instance.email)
+        instance.name = validated_data.get('name', instance.name)
+        if password is not None:
+            instance.set_password(password)
+            instance.save()
+        return instance
