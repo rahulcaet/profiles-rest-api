@@ -2,6 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from profiles_api import serializers
+from rest_framework import viewsets
 # Create your views here.
 
 class HelloApiView(APIView):
@@ -49,3 +50,42 @@ class HelloApiView(APIView):
         # if serializer.is_valid():
         return Response({ 'method' : 'delete'})
 
+class HelloViewSet(viewsets.ViewSet):
+    ''''Test API view Sets'''
+    serializer_class = serializers.HelloSerializer
+
+    def list(self, request, *args, **kwargs):
+        a_viewset = [
+            'hello',
+            'world',
+            'how'','
+            'are',
+            'you?'
+        ]
+        return Response({'message' : 'Hello!', 'a_viewset' : a_viewset})
+
+    def create(self, request, *args, **kwargs):
+        '''Create a new hello msg'''
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            #return Response(serializer.validated_data)
+            name = serializer.validated_data.get('name')
+            message = f'Hello {name}'
+            return Response({'message' : message})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def retrieve(self, request, pk=None):
+        """Handle getting a single profile object"""
+        return Response({'http_method' : 'get'})
+
+    def update(self, request, pk=None):
+        """Handle update of a single profile object"""
+        return Response({'http_method': 'put'})
+
+    def partial_update(self, request, pk=None):
+        """Handle partial update of a single profile object"""
+        return Response({'http_method': 'patch'})
+
+    def destroy(self, request, pk=None):
+        """Handle destroy of a single profile object"""
+        return Response({'http_method': 'delete'})
