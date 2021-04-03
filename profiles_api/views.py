@@ -9,6 +9,8 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.settings import api_settings
 from rest_framework import filters
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+
 
 # Create your views here.
 
@@ -114,6 +116,8 @@ class ProfileFeedItemViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
     queryset = models.ProfileFeedItem.objects.all()
     serializer_class = serializers.ProfileFeedItemSerializer
+    permission_classes = [permissions.IsOwnStatus,
+                          IsAuthenticated]
 
     def perform_create(self, serializer):
         '''sets the user profile to the logged in user'''

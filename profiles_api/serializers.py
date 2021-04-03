@@ -59,8 +59,12 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 class ProfileFeedItemSerializer(serializers.ModelSerializer):
     """"Serializes profile feed items"""
+    created_at = serializers.SerializerMethodField()
     class Meta:
         model = models.ProfileFeedItem
         #fields = '__all__'
-        fields = ('íd', 'user_profile', 'status_text', 'created_at')
+        fields = ('id', 'user_profile', 'status_text', 'created_at')
         extra_kwargs = { 'user_profile' : { 'read_only' : True }}
+
+    def get_created_at(self, obj):
+        return obj.created_at.strftime("%Y%m%d %H:%M:%S")
